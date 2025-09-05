@@ -19,7 +19,7 @@ docker run -d \
   -e PIHOLE_API_KEY=<YOUR_API_KEY> \
   -e PIHOLE_SCHEME=http \
   -e PIHOLE_PORT=80 \
-  amonacoos/pihole6_exporter:amd64
+  amonacoos/pihole6_exporter:latest
 ```
 
 ### 🔒 With HTTPS (default for official Pi-hole 6 exporter)
@@ -31,7 +31,7 @@ docker run -d \
   -e PIHOLE_API_KEY=<YOUR_API_KEY> \
   -e PIHOLE_SCHEME=https \
   -e PIHOLE_PORT=443 \
-  amonacoos/pihole6_exporter:amd64
+  amonacoos/pihole6_exporter:latest
 ```
 
 ---
@@ -48,12 +48,11 @@ docker run -d \
 
 ## 🛠 Docker Compose Example
 
-Example for **ARM64 (e.g. Raspberry Pi 4/5):**
 ```
 yaml
 services:
   pihole6-exporter:
-    image: amonacoos/pihole6_exporter:arm64
+    image: amonacoos/pihole6_exporter:latest
     container_name: pihole6_exporter
     environment:	
       - PIHOLE_HOST=<IP_OR_HOSTNAME>
