@@ -59,9 +59,9 @@ services:
       - PIHOLE_API_KEY=<YOUR_API_KEY>
       - PIHOLE_SCHEME=http
       - PIHOLE_PORT=80
+    restart: unless-stopped
     ports:
       - "9666:9666"
-    restart: unless-stopped
 ```
 
 ---
