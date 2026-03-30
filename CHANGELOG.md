@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Re-auth patch now uses `sed` instead of a Python heredoc, which failed silently on Alpine's `sh`. The exporter now correctly re-authenticates against Pi-hole when the session expires (default validity: 1800s), preventing `_1m` metrics from going empty after 30 minutes of uptime.
+- Fixed timezone bug in `_1m` metrics: `datetime.now().strftime("%s")` treated local time as UTC, causing the exporter to query a 1-minute window 2 hours in the future (UTC+2/Europe/Madrid) and always get empty results. Replaced with `time.time()` which always returns the correct UTC Unix timestamp.
 
 ## [2025-09-06]
 
