@@ -15,6 +15,10 @@ RUN sed -i '1,/^import requests/ s/^import requests/import requests\nimport os/'
     sed -i 's#"https://" + self.host + ":443/api/auth"#"{}://".format(os.getenv("PIHOLE_SCHEME","http")) + self.host + ":" + os.getenv("PIHOLE_PORT","80" if os.getenv("PIHOLE_SCHEME","http")=="http" else "443") + "/api/auth"#' pihole6_exporter && \
     sed -i 's#"https://" + self.host + ":443/api/" + api_path#"{}://".format(os.getenv("PIHOLE_SCHEME","http")) + self.host + ":" + os.getenv("PIHOLE_PORT","80" if os.getenv("PIHOLE_SCHEME","http")=="http" else "443") + "/api/" + api_path#' pihole6_exporter
 
+# Patch: store key on self and re-authenticate on session expiry
+RUN sed -i 's/            self\.sid = self\.get_sid(key)/            self.sid = self.get_sid(key)\n            self.key = key/' pihole6_exporter && \
+    sed -i 's/        return req\.json()/        reply = req.json()\n        if self.using_auth and isinstance(reply, dict) and reply.get("error", {}).get("key") == "unauthorized":\n            logging.info("session expired, re-authenticating...")\n            self.sid = self.get_sid(self.key)\n            headers["sid"] = self.sid\n            req = requests.get(url, verify = False, headers = headers)\n            reply = req.json()\n        return reply/' pihole6_exporter
+
 # Python deps (requirements.txt exists in that repo)
 RUN pip install --no-cache-dir prometheus_client requests
 
