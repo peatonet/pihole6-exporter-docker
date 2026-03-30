@@ -19,6 +19,9 @@ RUN sed -i '1,/^import requests/ s/^import requests/import requests\nimport os/'
 RUN sed -i 's/            self\.sid = self\.get_sid(key)/            self.sid = self.get_sid(key)\n            self.key = key/' pihole6_exporter && \
     sed -i 's/        return req\.json()/        reply = req.json()\n        if self.using_auth and isinstance(reply, dict) and reply.get("error", {}).get("key") == "unauthorized":\n            logging.info("session expired, re-authenticating...")\n            self.sid = self.get_sid(self.key)\n            headers["sid"] = self.sid\n            req = requests.get(url, verify = False, headers = headers)\n            reply = req.json()\n        return reply/' pihole6_exporter
 
+# Patch: fix timezone bug — datetime.now().strftime("%s") treats local time as UTC
+RUN sed -i 's/now = datetime\.now()\.strftime("%s")/now = str(int(time.time()))/' pihole6_exporter
+
 # Python deps (requirements.txt exists in that repo)
 RUN pip install --no-cache-dir prometheus_client requests
 
