@@ -38,6 +38,8 @@ docker run -d \
 
 ## 🔑 How to Get Your Pi-hole API Key
 
+> ⚠️ You must use an **App Password**, not the legacy API token. Passing the legacy token will fail auth and the container will exit with `RuntimeError: Pi-hole auth failed: password incorrect`.
+
 1. Open the **Pi-hole Web Interface**
 2. Go to **Settings > API / Web interface**
 3. Expand **Expert Options**

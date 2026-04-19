@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2026-04-19]
+
+### Fixed
+- Auth/API failures now raise a clear `RuntimeError` instead of crashing with a cryptic `KeyError: 'queries'` during the first scrape. Root cause: `get_sid` returned `None` silently when the Pi-hole API returned `session.valid=false` (wrong password, legacy API key used instead of app password, or session seats exceeded), and `get_api_call` returned the error payload as-is. `prometheus_client` calls `collect()` once during `REGISTRY.register(...)`, so any first-scrape failure killed the container permanently.
+- `get_sid` now raises `RuntimeError('Pi-hole auth failed: <message>')` when the auth response is invalid or has no `sid`.
+- `get_api_call` now raises `RuntimeError('Pi-hole API error on <path>: <error>')` if the response still carries an `error` key after the re-auth retry.
+- API key no longer mangled by shell expansion when it contains `$`, `` ` ``, `"`, `\`, `!`, or spaces. `PIHOLE_HOST` and `PIHOLE_API_KEY` are now read directly from `os.environ` by the Python script, and `ENTRYPOINT` uses the pure-exec form (no `sh -c`). Previously, `CMD ["python3 ... -k ${PIHOLE_API_KEY}"]` passed unquoted through `sh -c`, which silently altered any App Password containing shell-special characters — producing a confusing `Pi-hole auth failed: password incorrect` on the very first scrape despite the same key working via `curl`.
+
 ## [2026-03-30]
 
 ### Fixed
