@@ -12,7 +12,6 @@ A lightweight Docker container image with **Pi-hole 6 Exporter**, based on the [
 
 ### ▶️ With HTTP
 ```
-bash
 docker run -d \
   -p 9666:9666 \
   -e PIHOLE_HOST=<IP_OR_HOSTNAME> \
@@ -24,7 +23,6 @@ docker run -d \
 
 ### 🔒 With HTTPS (default for official Pi-hole 6 exporter)
 ```
-bash
 docker run -d \
   -p 9666:9666 \
   -e PIHOLE_HOST=<IP_OR_HOSTNAME> \
@@ -51,7 +49,6 @@ docker run -d \
 ## 🛠 Docker Compose Example
 
 ```
-yaml
 services:
   pihole6-exporter:
     image: amonacoos/pihole6_exporter:latest
@@ -72,7 +69,6 @@ services:
 
 Add the following job to your Prometheus `scrape_configs`:
 ```
-yaml
 - job_name: 'pihole6-exporter'
   scrape_interval: 30s
   static_configs:
